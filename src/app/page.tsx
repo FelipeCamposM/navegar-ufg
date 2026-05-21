@@ -6,6 +6,7 @@ import type Cytoscape from 'cytoscape';
 import { Toolbar } from '@/components/Toolbar';
 import { StatsPanel } from '@/components/StatsPanel';
 import { NotificationToast } from '@/components/NotificationToast';
+import { CompassOverlay } from '@/components/CompassOverlay';
 
 // Cytoscape requires window — must be loaded client-side only
 const GraphCanvas = dynamic(
@@ -28,9 +29,11 @@ export default function Home() {
       <Toolbar cyRef={cyRef} />
 
       {/* Stats panel floats at right */}
-      <div className="fixed right-4 top-20 z-10">
+      <div className="fixed right-4 top-32 z-10">
         <StatsPanel />
       </div>
+
+      <CompassOverlay />
 
       {/* Notification */}
       <NotificationToast />

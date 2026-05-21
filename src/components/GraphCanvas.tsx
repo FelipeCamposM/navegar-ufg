@@ -3,6 +3,7 @@
 import { useEffect, useRef, useMemo, useState } from 'react';
 import CytoscapeComponent from 'react-cytoscapejs';
 import type Cytoscape from 'cytoscape';
+import { useShallow } from 'zustand/react/shallow';
 import { useGraph } from '@/hooks/useGraph';
 import { ContextMenu, ContextMenuState } from './ContextMenu';
 import type { NodeId } from '@/lib/graph/types';
@@ -28,18 +29,27 @@ function findNearestNode(cy: Cytoscape.Core, pos: { x: number; y: number }): str
 // Static stylesheet — only recomputed when showLabels/showNodes toggle.
 // Dynamic visual states use CSS classes applied imperatively in useEffect,
 // avoiding large ID-selector strings that force full Cytoscape re-styles.
-function buildStylesheet(showLabels: boolean, showNodes: boolean, showRouteArrows: boolean): Cytoscape.StylesheetStyle[] {
+function buildStylesheet(
+  showLabels: boolean,
+  showNodes: boolean,
+  showRouteArrows: boolean,
+  performanceMode: boolean
+): Cytoscape.StylesheetStyle[] {
+  const renderLabels = showLabels && !performanceMode;
+  const renderGlobalArrows = showRouteArrows;
+  const transitionDuration = performanceMode ? 0 : 200;
+
   return [
     {
       selector: 'node',
       style: {
         'background-color': colors.nodeDefault,
-        'border-width': showNodes ? 1 : 0,
+        'border-width': showNodes && !performanceMode ? 1 : 0,
         'border-color': 'rgba(255,255,255,0.22)',
-        width: showNodes ? 6 : 4,
-        height: showNodes ? 6 : 4,
-        opacity: showNodes ? 0.9 : 0,
-        label: showLabels && showNodes ? 'data(label)' : '',
+        width: showNodes ? (performanceMode ? 2 : 6) : 2,
+        height: showNodes ? (performanceMode ? 2 : 6) : 2,
+        opacity: showNodes ? (performanceMode ? 0.75 : 0.9) : 0,
+        label: renderLabels && showNodes ? 'data(label)' : '',
         'font-size': 9,
         color: '#ffffff',
         'text-outline-color': '#000000',
@@ -47,36 +57,38 @@ function buildStylesheet(showLabels: boolean, showNodes: boolean, showRouteArrow
         'text-valign': 'top',
         'text-halign': 'center',
         'transition-property': 'background-color border-color width height opacity',
-        'transition-duration': 200,
+        'transition-duration': transitionDuration,
       } as Cytoscape.Css.Node,
     },
     {
       selector: 'edge',
       style: {
-        width: 5,
+        width: performanceMode ? 1.25 : 5,
         'line-color': '#4B5563',
         'line-cap': 'round',
         'target-arrow-shape': 'none',
         'source-arrow-shape': 'none',
         'mid-target-arrow-shape': 'none',
         'curve-style': 'straight',
-        label: showLabels ? 'data(label)' : '',
+        label: renderLabels ? 'data(label)' : '',
         'font-size': 8,
         color: 'rgba(255,255,255,0.45)',
         'text-outline-color': '#000',
         'text-outline-width': 1,
         'transition-property': 'line-color width',
-        'transition-duration': 200,
+        'transition-duration': transitionDuration,
       } as Cytoscape.Css.Edge,
     },
-    ...(showRouteArrows ? [{
+    ...(renderGlobalArrows ? [{
       // Vee arrows draw only a thin head at the road center, keeping the lane readable.
       selector: 'edge[?directed]',
       style: {
         'curve-style': 'straight',
         'mid-target-arrow-shape': 'vee',
-        'mid-target-arrow-color': 'rgba(255,255,255,0.34)',
-        'mid-arrow-scale': 0.5,
+        'mid-target-arrow-color': performanceMode
+          ? 'rgba(255,255,255,0.24)'
+          : 'rgba(255,255,255,0.38)',
+        'mid-arrow-scale': performanceMode ? 0.16 : 0.22,
       } as Cytoscape.Css.Edge,
     }] : []),
     // ── Dynamic class selectors ──────────────────────────────────────
@@ -102,8 +114,8 @@ function buildStylesheet(showLabels: boolean, showNodes: boolean, showRouteArrow
       selector: 'edge.path-edge[?directed]',
       style: {
         'mid-target-arrow-shape': 'vee',
-        'mid-target-arrow-color': 'rgba(219,234,254,0.68)',
-        'mid-arrow-scale': 0.58,
+        'mid-target-arrow-color': 'rgba(219,234,254,0.55)',
+        'mid-arrow-scale': 0.28,
       } as Cytoscape.Css.Edge,
     }] : []),
     {
@@ -154,20 +166,41 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
 
   const {
     graph, graphVersion, mode, showLabels, showNodes, showRouteArrows, sourceId, targetId, dijkstraResult,
-    addNode, addEdge, removeNode, removeEdge, moveNode,
-    selectNode, undo, redo, clearSelection,
     fitGraph, setFitGraph, graphType,
     isNavigating, navIndex, advanceNav,
-  } = useGraph();
+  } = useGraph(useShallow((state) => ({
+    graph: state.graph,
+    graphVersion: state.graphVersion,
+    mode: state.mode,
+    showLabels: state.showLabels,
+    showNodes: state.showNodes,
+    showRouteArrows: state.showRouteArrows,
+    sourceId: state.sourceId,
+    targetId: state.targetId,
+    dijkstraResult: state.dijkstraResult,
+    fitGraph: state.fitGraph,
+    setFitGraph: state.setFitGraph,
+    graphType: state.graphType,
+    isNavigating: state.isNavigating,
+    navIndex: state.navIndex,
+    advanceNav: state.advanceNav,
+  })));
+
+  const graphSize = useMemo(() => {
+    void graphVersion;
+    return {
+      nodes: graph.nodeCount,
+      edges: graph.edgeCount,
+    };
+  }, [graph, graphVersion]);
+  const performanceMode = graphSize.nodes > 5000 || graphSize.edges > 10000;
+  const renderLabels = showLabels && !performanceMode;
 
   useEffect(() => { storeRef.current = useGraph.getState(); });
 
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
   const draggingFrom = useRef<NodeId | null>(null);
   const prevNavNodeRef = useRef<string | null>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  // Accumulated heading — never jumps through ±180° discontinuity
-  const prevHeadingRef = useRef(0);
 
   const elements = useMemo(() => {
     const els: Cytoscape.ElementDefinition[] = [];
@@ -187,7 +220,7 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
             id: edge.id,
             source: edge.source,
             target: edge.target,
-            label: showLabels
+            label: renderLabels
               ? edge.weight >= 1000
                 ? `${(edge.weight / 1000).toFixed(2)}km`
                 : `${edge.weight.toFixed(0)}m`
@@ -200,10 +233,13 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
     }
     return els;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [graphVersion, showLabels]);
+  }, [graphVersion, renderLabels]);
 
   // Static stylesheet — only changes when labels/nodes toggles flip
-  const stylesheet = useMemo(() => buildStylesheet(showLabels, showNodes, showRouteArrows), [showLabels, showNodes, showRouteArrows]);
+  const stylesheet = useMemo(
+    () => buildStylesheet(showLabels, showNodes, showRouteArrows, performanceMode),
+    [showLabels, showNodes, showRouteArrows, performanceMode]
+  );
 
   useEffect(() => {
     if (fitGraph && cyRef.current) {
@@ -251,7 +287,6 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
         }
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sourceId, targetId, dijkstraResult, cyRef]);
 
   // Navigation: O(1) per step — only moves the nav dot + marks one edge as traveled
@@ -292,7 +327,9 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
       }
     });
 
-    // Camera follow — heading-up 2D rotation (Maps style, no 3D tilt)
+    // Camera follow: keep the map north-up and move ahead along the route.
+    // Rotating the Cytoscape wrapper clips the canvas because the rendered
+    // viewport remains bounded by its original rectangular element.
     const currentEl = cy.$(`#${currentNodeId}`);
     const nextId = path[navIndex + 1];
     if (currentEl.length) {
@@ -303,8 +340,6 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
         const h = container.offsetHeight;
         const BASE_ZOOM = 3;
         let offsetX = 0, offsetY = 0;
-        // Default: keep previous heading (no next node = end of route)
-        let headingDeg = prevHeadingRef.current;
 
         if (nextId) {
           const nextEl = cy.$(`#${nextId}`);
@@ -316,35 +351,13 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
             if (dist > 0) {
               offsetX = (dx / dist) * 50;
               offsetY = (dy / dist) * 50;
-              // Angle that places travel direction at screen-up (-y axis)
-              const rawHeading = -Math.atan2(dx, -dy) * (180 / Math.PI);
-              // Shortest arc — prevents CSS from spinning through ±180°
-              let delta = rawHeading - prevHeadingRef.current;
-              while (delta > 180) delta -= 360;
-              while (delta < -180) delta += 360;
-              headingDeg = prevHeadingRef.current + delta;
-              prevHeadingRef.current = headingDeg;
             }
           }
         }
 
-        // Scale so rotated rect's corners stay inside container — prevents clipping
-        const hr = (headingDeg * Math.PI) / 180;
-        const ac = Math.abs(Math.cos(hr));
-        const as = Math.abs(Math.sin(hr));
-        const scale = Math.min(w / (w * ac + h * as), h / (w * as + h * ac)) * 0.96;
-        // Zoom compensates for scale so visual road size stays constant
-        const navZoom = BASE_ZOOM / scale;
-
-        if (wrapperRef.current) {
-          wrapperRef.current.style.transition = 'transform 0.28s ease-out';
-          wrapperRef.current.style.transformOrigin = 'center center';
-          wrapperRef.current.style.transform =
-            `rotate(${headingDeg.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
-        }
-
-        // Pan target corrected for CSS-scale offset so node lands at visual 62%
-        const targetCanvasY = h / 2 + (0.62 * h - h / 2) / scale;
+        // Keep the navigation marker slightly below center so the route ahead is visible.
+        const navZoom = BASE_ZOOM;
+        const targetCanvasY = 0.62 * h;
         cy.animate({
           pan: {
             x: w / 2 - (pos.x + offsetX) * navZoom,
@@ -361,18 +374,6 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isNavigating, navIndex, dijkstraResult]);
-
-  // Reset rotation + accumulated heading when navigation ends
-  useEffect(() => {
-    if (!isNavigating) {
-      prevHeadingRef.current = 0;
-      if (wrapperRef.current) {
-        wrapperRef.current.style.transition = 'transform 0.5s ease-in-out';
-        wrapperRef.current.style.transform = 'none';
-        wrapperRef.current.style.transformOrigin = '';
-      }
-    }
-  }, [isNavigating]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -535,7 +536,7 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
   }, [cyRef]);
 
   return (
-    <div ref={wrapperRef} className="cy-container">
+    <div className="cy-container">
       <CytoscapeComponent
         elements={elements}
         stylesheet={stylesheet}
@@ -546,6 +547,9 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
         wheelSensitivity={1.8}
         minZoom={0.02}
         maxZoom={10}
+        pixelRatio={performanceMode ? 1 : 'auto'}
+        textureOnViewport={performanceMode}
+        hideEdgesOnViewport={false}
         autoungrabify={mode !== 'move' && mode !== 'addEdge'}
         boxSelectionEnabled={false}
         panningEnabled
