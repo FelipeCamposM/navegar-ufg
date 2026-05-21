@@ -69,17 +69,16 @@ function buildStylesheet(showLabels: boolean, showNodes: boolean, showRouteArrow
         'transition-duration': 200,
       } as Cytoscape.Css.Edge,
     },
-    {
-      // Straight curve keeps control points stable on tight roundabout geometry.
-      // Arrow sits at mid-point, scale 0.4 keeps it visually inside the 5px road.
+    ...(showRouteArrows ? [{
+      // Vee arrows draw only a thin head at the road center, keeping the lane readable.
       selector: 'edge[?directed]',
       style: {
         'curve-style': 'straight',
-        'mid-target-arrow-shape': 'triangle',
-        'mid-target-arrow-color': '#9CA3AF',
-        'mid-arrow-scale': 0.4,
+        'mid-target-arrow-shape': 'vee',
+        'mid-target-arrow-color': 'rgba(255,255,255,0.34)',
+        'mid-arrow-scale': 0.5,
       } as Cytoscape.Css.Edge,
-    },
+    }] : []),
     // ── Dynamic class selectors ──────────────────────────────────────
     {
       selector: '.visited',
@@ -103,8 +102,8 @@ function buildStylesheet(showLabels: boolean, showNodes: boolean, showRouteArrow
       selector: 'edge.path-edge[?directed]',
       style: {
         'mid-target-arrow-shape': 'vee',
-        'mid-target-arrow-color': '#BFDBFE',
-        'mid-arrow-scale': 0.65,
+        'mid-target-arrow-color': 'rgba(219,234,254,0.68)',
+        'mid-arrow-scale': 0.58,
       } as Cytoscape.Css.Edge,
     }] : []),
     {
@@ -544,7 +543,7 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
         cy={(cy: Cytoscape.Core) => {
           (cyRef as React.MutableRefObject<Cytoscape.Core | null>).current = cy;
         }}
-        wheelSensitivity={0.7}
+        wheelSensitivity={1.8}
         minZoom={0.02}
         maxZoom={10}
         autoungrabify={mode !== 'move' && mode !== 'addEdge'}

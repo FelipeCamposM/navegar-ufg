@@ -266,7 +266,7 @@ export function Toolbar({ cyRef }: ToolbarProps) {
               className="text-xs gap-1.5"
             >
               <Navigation2 size={13} />
-              <span className="hidden lg:inline">Sentido</span>
+              <span className="hidden lg:inline">Setas</span>
             </TipButton>
           </div>
 
