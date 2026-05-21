@@ -1,10 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { useRef, useState } from 'react';
 import {
   Upload, Map, Trash2, MousePointer2, CirclePlus, Spline,
   Move, Eraser, Circle, Tag, Zap, X, Undo2, Redo2,
-  Camera, ArrowLeftRight, ArrowRight, Loader2, Navigation, Play, Square, Navigation2,
+  Camera, ArrowLeftRight, ArrowRight, Loader2, Navigation, Play, Square, Navigation2, BookOpen, Presentation,
 } from 'lucide-react';
 import { useGraph } from '@/hooks/useGraph';
 import { glass, colors } from '@/lib/design-tokens';
@@ -316,6 +317,24 @@ export function Toolbar({ cyRef }: ToolbarProps) {
             <TipButton title="Copiar imagem do grafo (PNG)" onClick={handleCopyImage} className="w-8 h-8 px-0">
               <Camera size={13} />
             </TipButton>
+          </div>
+
+          {/* Docs + Slides links */}
+          <div className="relative z-10 flex items-center gap-1">
+            <Link
+              href="/slides"
+              title="Slides de apresentação"
+              className={cn(glass.button, 'w-8 h-8 px-0')}
+            >
+              <Presentation size={13} />
+            </Link>
+            <Link
+              href="/docs"
+              title="Documentação do projeto"
+              className={cn(glass.button, 'w-8 h-8 px-0')}
+            >
+              <BookOpen size={13} />
+            </Link>
           </div>
 
           {/* Color legend */}
