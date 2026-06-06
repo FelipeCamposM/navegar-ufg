@@ -33,7 +33,7 @@ function Pill({
   color,
   children,
 }: {
-  color: 'orange' | 'blue' | 'green' | 'purple' | 'red' | 'white';
+  color: 'orange' | 'blue' | 'green' | 'purple' | 'red' | 'white' | 'cyan';
   children: React.ReactNode;
 }) {
   const cls = {
@@ -43,6 +43,7 @@ function Pill({
     purple: 'bg-purple-500/[0.20] border-purple-400/45 text-purple-200',
     red:    'bg-red-500/[0.20] border-red-400/45 text-red-200',
     white:  'bg-white/[0.09] border-white/[0.20] text-white/70',
+    cyan:   'bg-cyan-500/[0.18] border-cyan-400/40 text-cyan-200',
   }[color];
   return (
     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${cls}`}>
@@ -86,7 +87,6 @@ function SlideShell({
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#070710]">
       <Orbs a={orbA} b={orbB} />
-      {/* accent bar */}
       <div
         className="absolute top-0 left-0 right-0 h-[2px] z-10"
         style={{ background: `linear-gradient(to right, ${accentFrom}, ${accentTo}, ${accentFrom})` }}
@@ -139,28 +139,30 @@ function S01Cover() {
     >
       <div className="flex-1 flex items-center justify-between gap-12">
         <div className="max-w-2xl">
-          <div className="flex flex-wrap items-center gap-2 mb-8">
+          <div className="flex flex-wrap items-center gap-2 mb-8 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
             <Pill color="blue">AED2 · UFG · 2026-1</Pill>
             <Pill color="green">Entrega 01/06/2026</Pill>
           </div>
 
-          <h1 className="text-[5.5rem] font-black leading-none tracking-tight mb-4">
+          <h1 className="text-[5.5rem] font-black leading-none tracking-tight mb-4 animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-75">
             <span className="text-white">NAVEGAR</span>
             <span className="text-blue-400">UFG</span>
           </h1>
 
-          <p className="text-2xl text-white/55 mb-2">Sistema de Navegação em Grafos</p>
-          <p className="text-base text-white/30 mb-10">
+          <p className="text-2xl text-white/55 mb-1 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-150">
+            Sistema de Navegação em Grafos
+          </p>
+          <p className="text-base text-white/30 mb-10 animate-in fade-in duration-500 fill-mode-both delay-150">
             Algoritmos e Estruturas de Dados 2
           </p>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both delay-300">
             {[
+              'Dijkstra c/ MinHeap próprio — < 10 ms',
               'Importa mapas OpenStreetMap reais',
-              'Dijkstra com MinHeap próprio',
               'Grafos direcionados + não-direcionados',
               '100% no browser · sem servidor',
-              '~5.000 nós · ~7.000 arestas',
+              'Campus UFG: ~5.000 nós, ~7.000 arestas',
             ].map(t => (
               <span
                 key={t}
@@ -172,12 +174,12 @@ function S01Cover() {
           </div>
         </div>
 
-        <div className="hidden xl:block w-64 h-64 flex-shrink-0 opacity-80">
+        <div className="hidden xl:block w-64 h-64 flex-shrink-0 animate-in fade-in zoom-in-95 duration-700 fill-mode-both delay-300">
           <GraphSvg />
         </div>
       </div>
 
-      <p className="text-[10px] text-white/20 uppercase tracking-widest text-center pb-2">
+      <p className="text-[10px] text-white/20 uppercase tracking-widest text-center pb-2 animate-in fade-in duration-500 fill-mode-both delay-500">
         → ou espaço para avançar
       </p>
     </SlideShell>
@@ -186,14 +188,14 @@ function S01Cover() {
 
 function S02Reqs() {
   const rows = [
-    { id: 'RF04', desc: 'Calcular caminho mínimo — Dijkstra',      tone: 'border-orange-400/50 bg-orange-500/[0.10]' },
-    { id: 'RF06', desc: 'Grafos direcionados e não-direcionados',   tone: 'border-yellow-400/40 bg-yellow-500/[0.08]' },
-    { id: 'RF05', desc: 'Criar e editar grafos',                    tone: 'border-amber-400/40 bg-amber-500/[0.08]' },
-    { id: 'RF01', desc: 'Importar mapas (.osm · .poly · .txt)',     tone: 'border-blue-400/30 bg-blue-500/[0.07]' },
-    { id: 'RF07', desc: 'Exibir estatísticas do algoritmo',         tone: 'border-blue-400/30 bg-blue-500/[0.07]' },
-    { id: 'RF02', desc: 'Enumerar vértices · rotular pesos',        tone: 'border-white/[0.14] bg-white/[0.04]' },
-    { id: 'RF03', desc: 'Seleção de origem/destino com cores',      tone: 'border-white/[0.14] bg-white/[0.04]' },
-    { id: 'RF08', desc: 'Copiar imagem do grafo (PNG)',             tone: 'border-white/[0.14] bg-white/[0.04]' },
+    { id: 'RF04', desc: 'Calcular caminho mínimo com terminação antecipada ao encontrar o destino',   tone: 'border-orange-400/50 bg-orange-500/[0.10]' },
+    { id: 'RF06', desc: 'Suportar grafos direcionados e não-direcionados detectados automaticamente', tone: 'border-yellow-400/40 bg-yellow-500/[0.08]' },
+    { id: 'RF05', desc: 'Criar, editar e excluir vértices e arestas com undo/redo ilimitado',        tone: 'border-amber-400/40 bg-amber-500/[0.08]' },
+    { id: 'RF01', desc: 'Importar mapas reais nos formatos .osm, .poly e .txt',                      tone: 'border-blue-400/30 bg-blue-500/[0.07]' },
+    { id: 'RF07', desc: 'Exibir tempo de execução, nós explorados e custo total do caminho',         tone: 'border-blue-400/30 bg-blue-500/[0.07]' },
+    { id: 'RF02', desc: 'Alternar visibilidade de vértices e rótulos de peso nas arestas',           tone: 'border-white/[0.14] bg-white/[0.04]' },
+    { id: 'RF03', desc: 'Marcar origem (verde), destino (vermelho) e caminho (laranja) com cores',   tone: 'border-white/[0.14] bg-white/[0.04]' },
+    { id: 'RF08', desc: 'Exportar captura do grafo como PNG direto para a área de transferência',    tone: 'border-white/[0.14] bg-white/[0.04]' },
   ];
 
   return (
@@ -203,14 +205,19 @@ function S02Reqs() {
       orbA="rgba(251,146,60,0.12)"
       orbB="rgba(245,158,11,0.10)"
     >
-      <div className="mb-5">
+      <div className="mb-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
         <p className="text-xs text-white/30 uppercase tracking-widest mb-1">Visão Geral</p>
         <h2 className="text-3xl font-bold text-white">Requisitos Funcionais</h2>
+        <p className="text-white/35 text-sm mt-1">8 requisitos · todos implementados</p>
       </div>
 
       <div className="grid grid-cols-4 gap-3 flex-1 content-start">
-        {rows.map(r => (
-          <div key={r.id} className={`rounded-2xl border px-4 py-3 flex flex-col justify-between ${r.tone}`}>
+        {rows.map((r, i) => (
+          <div
+            key={r.id}
+            className={`rounded-2xl border px-4 py-3 flex flex-col justify-between animate-in fade-in zoom-in-95 duration-300 fill-mode-both ${r.tone}`}
+            style={{ animationDelay: `${75 + i * 50}ms` }}
+          >
             <div>
               <span className="text-[10px] font-mono text-white/35 mb-2 block">{r.id}</span>
               <p className="text-sm text-white/75 leading-snug">{r.desc}</p>
@@ -231,19 +238,22 @@ function S03Dijkstra() {
       orbA="rgba(59,130,246,0.18)"
       orbB="rgba(6,182,212,0.12)"
     >
-      <div className="mb-5">
+      <div className="mb-4 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
         <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF04</p>
         <h2 className="text-3xl font-bold text-white">Algoritmo de Dijkstra</h2>
+        <p className="text-white/40 text-sm mt-1">
+          Garante caminho ótimo em grafos com pesos não-negativos — implementado do zero sem biblioteca externa
+        </p>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
         {/* left */}
         <div className="flex-1 flex flex-col gap-3 min-w-0">
-          <GCard>
+          <GCard className="animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-75">
             <div className="grid grid-cols-3 gap-4 text-center">
               {[
                 { label: 'Complexidade',  value: 'O((V+E) log V)',  color: 'text-blue-300' },
-                { label: 'Heap',          value: 'MinHeap próprio', color: 'text-purple-300' },
+                { label: 'Estrutura',     value: 'MinHeap próprio', color: 'text-purple-300' },
                 { label: 'Terminação',    value: 'Antecipada',      color: 'text-green-300' },
               ].map(({ label, value, color }) => (
                 <div key={label}>
@@ -254,28 +264,30 @@ function S03Dijkstra() {
             </div>
           </GCard>
 
-          <Code>{`class MinHeap {
-  insert({ dist, nodeId }): void  // O(log n) — bubbleUp
-  extractMin(): entry             // O(log n) — sinkDown
+          <div className="animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-150">
+            <Code>{`class MinHeap {
+  insert({ dist, nodeId }): void  // O(log n) — sobe para o pai (bubbleUp)
+  extractMin(): entry             // O(log n) — desce pelos filhos (sinkDown)
 }
 
-// dijkstra.ts — terminação antecipada
+// dijkstra.ts — termina assim que encontra o destino
 while (heap.size > 0) {
   const u = heap.extractMin();
   if (visited(u)) continue;
-  if (u === target) break;      // ← para ao encontrar destino
+  if (u === target) break;        // ← não processa o resto do grafo
 
   for (const edge of graph.getNeighbors(u)) {
     const d = dist[u] + edge.weight;
     if (d < dist[v]) {
-      dist[v] = d; prev[v] = u;
+      dist[v] = d; prev[v] = u;   // relaxamento da aresta
       heap.insert({ dist: d, nodeId: v });
     }
   }
 }
-// retorna: { path, cost, explored, timeMs, dist, noPath }`}</Code>
+// retorna: { path, cost, explored, timeMs, noPath }`}</Code>
+          </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-3 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-300">
             {[
               { label: 'heap.insert',    c: 'O(log n)', desc: 'bubbleUp ao pai' },
               { label: 'heap.extract',   c: 'O(log n)', desc: 'sinkDown filhos' },
@@ -291,17 +303,17 @@ while (heap.size > 0) {
         </div>
 
         {/* right — steps */}
-        <div className="w-56 flex flex-col gap-2 justify-between">
+        <div className="w-56 flex flex-col gap-2 justify-between animate-in fade-in slide-in-from-right-3 duration-500 fill-mode-both delay-150">
           <div className="flex flex-col gap-2">
             {[
               'dist[source] = 0, demais = ∞',
               'Inserir source no MinHeap',
-              'Extrair mínimo u',
-              'u visitado? → ignorar',
+              'Extrair nó u com menor dist',
+              'u já visitado? → ignorar',
               'u = target? → parar ✓',
-              'Relaxar vizinhos de u',
+              'Relaxar cada vizinho de u',
               'Inserir vizinhos melhorados',
-              'Reconstruir via prev[]',
+              'Reconstruir caminho via prev[]',
             ].map((t, i) => <Step key={i} n={i + 1}>{t}</Step>)}
           </div>
 
@@ -325,9 +337,10 @@ function S04Directed() {
       orbA="rgba(139,92,246,0.14)"
       orbB="rgba(109,40,217,0.12)"
     >
-      <div className="mb-5">
+      <div className="mb-4 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
         <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF06</p>
         <h2 className="text-3xl font-bold text-white">Grafos Direcionados e Não-Direcionados</h2>
+        <p className="text-white/40 text-sm mt-1">Detecção automática por parser — sem configuração manual</p>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
@@ -337,6 +350,7 @@ function S04Directed() {
               {
                 ext: '.osm',
                 border: 'border-green-400/35 bg-green-500/[0.07]',
+                delay: 75,
                 items: [
                   'oneway=yes → direcionada',
                   'oneway=1 → direcionada',
@@ -347,23 +361,29 @@ function S04Directed() {
               {
                 ext: '.poly',
                 border: 'border-blue-400/35 bg-blue-500/[0.07]',
+                delay: 150,
                 items: [
-                  '4ª coluna = 0 → não-direcionada',
+                  '4ª coluna = 0 → bidirecional',
                   '4ª coluna = 1 → direcionada',
-                  'Formato do professor UFG',
+                  'Formato oficial do professor UFG',
                 ],
               },
               {
                 ext: '.txt',
                 border: 'border-amber-400/35 bg-amber-500/[0.07]',
+                delay: 225,
                 items: [
-                  '4ª col. = 0/false → não-dir.',
+                  '4ª col. = 0/false → bidirecional',
                   '4ª col. = 1/true → direcionada',
-                  'Padrão → não-direcionada',
+                  'Omitida → padrão bidirecional',
                 ],
               },
-            ].map(({ ext, border, items }) => (
-              <div key={ext} className={`rounded-2xl border px-4 py-3 ${border}`}>
+            ].map(({ ext, border, delay, items }) => (
+              <div
+                key={ext}
+                className={`rounded-2xl border px-4 py-3 animate-in fade-in zoom-in-95 duration-400 fill-mode-both ${border}`}
+                style={{ animationDelay: `${delay}ms` }}
+              >
                 <p className="text-xl font-mono font-bold text-white/85 mb-2">{ext}</p>
                 {items.map(item => (
                   <p key={item} className="text-xs text-white/55 py-0.5 leading-snug">{item}</p>
@@ -372,26 +392,28 @@ function S04Directed() {
             ))}
           </div>
 
-          <Code>{`// Graph.ts — aresta não-direcionada = 2 entradas na adjacência
+          <div className="animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-300">
+            <Code>{`// Graph.ts — aresta não-direcionada gera 2 entradas na adjacência
 addEdge(edge: GraphEdge): void {
   this.adjacency.get(edge.source).push(edge);          // A → B
 
   if (!edge.directed) {
     this.adjacency.get(edge.target).push({
       ...edge,
-      id: edge.id + '_rev',   // sufixo _rev = aresta reversa
-      source: edge.target,    // B → A
+      id: edge.id + '_rev',   // sufixo _rev identifica aresta reversa
+      source: edge.target,    // B → A (direção invertida)
       target: edge.source,
     });
   }
 }
-// Renderização: arestas _rev são filtradas no GraphCanvas
-// updateEdgeDirection: remove/insere _rev conforme novo valor`}</Code>
+// No GraphCanvas: arestas _rev são filtradas — sem duplicata visual
+// Menu de contexto (botão direito): alterna direção de qualquer aresta`}</Code>
+          </div>
         </div>
 
-        <div className="w-60 flex flex-col gap-3">
+        <div className="w-60 flex flex-col gap-3 animate-in fade-in slide-in-from-right-3 duration-500 fill-mode-both delay-200">
           <GCard>
-            <p className="text-[10px] text-white/35 uppercase tracking-wider mb-3">Toggle na Toolbar</p>
+            <p className="text-[10px] text-white/35 uppercase tracking-wider mb-3">Toggle Global na Toolbar</p>
             {[
               { label: 'Bidirecional', icon: '⇄', on: true },
               { label: 'Direcionado',  icon: '→', on: false },
@@ -410,15 +432,15 @@ addEdge(edge: GraphEdge): void {
             ))}
           </GCard>
           <GCard>
-            <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">Menu de contexto</p>
+            <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">Edição por aresta</p>
             <p className="text-xs text-white/50 leading-relaxed">
-              Botão direito sobre qualquer aresta permite alternar sua direção individualmente após a importação.
+              Clique direito sobre qualquer aresta para inverter sua direção individualmente — sem precisar reimportar o mapa.
             </p>
           </GCard>
           <GCard>
             <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">Detecção automática</p>
             <p className="text-xs text-white/50 leading-relaxed">
-              Cada parser detecta a direção via tag/flag do arquivo — sem intervenção manual necessária.
+              Cada parser lê a direção direto do arquivo — o Dijkstra respeita a direcionalidade na travessia do grafo.
             </p>
           </GCard>
         </div>
@@ -428,6 +450,14 @@ addEdge(edge: GraphEdge): void {
 }
 
 function S05Editing() {
+  const modes = [
+    { mode: 'Selecionar',        key: 'S',   icon: '↖', desc: 'Define origem e destino para o Dijkstra', border: 'border-blue-400/35 bg-blue-500/[0.07]' },
+    { mode: 'Adicionar Vértice', key: 'V',   icon: '⊕', desc: 'Clique no canvas cria um nó na posição',   border: 'border-green-400/35 bg-green-500/[0.07]' },
+    { mode: 'Adicionar Aresta',  key: 'E',   icon: '⌒', desc: 'Clica em A, clica em B → aresta criada',  border: 'border-purple-400/35 bg-purple-500/[0.07]' },
+    { mode: 'Mover',             key: 'M',   icon: '✥', desc: 'Arrasta vértice para reposicioná-lo',      border: 'border-amber-400/35 bg-amber-500/[0.07]' },
+    { mode: 'Excluir',           key: 'Del', icon: '✕', desc: 'Remove nó e todas as suas arestas',        border: 'border-red-400/35 bg-red-500/[0.07]' },
+  ];
+
   return (
     <SlideShell
       accentFrom="rgba(16,185,129,0.8)"
@@ -435,64 +465,61 @@ function S05Editing() {
       orbA="rgba(16,185,129,0.13)"
       orbB="rgba(5,150,105,0.10)"
     >
-      <div className="mb-5">
+      <div className="mb-4 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
         <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF05</p>
         <h2 className="text-3xl font-bold text-white">Criação e Edição de Grafos</h2>
+        <p className="text-white/40 text-sm mt-1">5 modos de interação + histórico de desfazer/refazer</p>
       </div>
 
-      <div className="flex gap-5 flex-1 min-h-0">
-        <div className="flex-1 flex flex-col gap-4 min-w-0">
-          <div className="grid grid-cols-5 gap-3">
-            {[
-              { mode: 'Selecionar',        key: 'S',   icon: '↖', desc: 'Define origem e destino para Dijkstra', border: 'border-blue-400/35 bg-blue-500/[0.07]' },
-              { mode: 'Adicionar Vértice', key: 'V',   icon: '⊕', desc: 'Clique no canvas cria nó na posição',   border: 'border-green-400/35 bg-green-500/[0.07]' },
-              { mode: 'Adicionar Aresta',  key: 'E',   icon: '⌒', desc: 'Clica em A → clica em B → cria aresta', border: 'border-purple-400/35 bg-purple-500/[0.07]' },
-              { mode: 'Mover',             key: 'M',   icon: '✥', desc: 'Arrasta para reposicionar vértice',      border: 'border-amber-400/35 bg-amber-500/[0.07]' },
-              { mode: 'Excluir',           key: 'Del', icon: '✕', desc: 'Remove nó + todas suas arestas',        border: 'border-red-400/35 bg-red-500/[0.07]' },
-            ].map(({ mode, key, icon, desc, border }) => (
-              <div key={mode} className={`rounded-2xl border px-3 py-3 text-center ${border}`}>
-                <p className="text-2xl mb-2">{icon}</p>
-                <p className="text-xs font-semibold text-white/80 mb-1.5 leading-tight">{mode}</p>
-                <kbd className="bg-white/[0.08] border border-white/[0.14] rounded px-2 py-0.5 text-[10px] font-mono text-amber-300">
-                  {key}
+      <div className="flex-1 flex flex-col gap-4 min-h-0">
+        <div className="grid grid-cols-5 gap-3">
+          {modes.map(({ mode, key, icon, desc, border }, i) => (
+            <div
+              key={mode}
+              className={`rounded-2xl border px-3 py-3 text-center animate-in fade-in zoom-in-95 duration-300 fill-mode-both ${border}`}
+              style={{ animationDelay: `${75 + i * 60}ms` }}
+            >
+              <p className="text-2xl mb-2">{icon}</p>
+              <p className="text-xs font-semibold text-white/80 mb-1.5 leading-tight">{mode}</p>
+              <kbd className="bg-white/[0.08] border border-white/[0.14] rounded px-2 py-0.5 text-[10px] font-mono text-amber-300">
+                {key}
+              </kbd>
+              <p className="text-[10px] text-white/40 mt-2 leading-snug">{desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-300">
+          <GCard>
+            <p className="text-sm font-semibold text-white/80 mb-3">Desfazer / Refazer</p>
+            <div className="flex gap-2 mb-3">
+              {['Ctrl+Z', 'Ctrl+Y'].map(k => (
+                <kbd key={k} className="bg-white/[0.08] border border-white/[0.14] rounded px-2 py-1 text-xs font-mono text-amber-300">
+                  {k}
                 </kbd>
-                <p className="text-[10px] text-white/40 mt-2 leading-snug">{desc}</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            <p className="text-xs text-white/45 leading-relaxed">
+              Stack de <strong className="text-white/70">20 snapshots</strong> — cópia profunda do grafo
+              antes de cada mutação estrutural. Apenas adicionar/remover vértice ou aresta gera snapshot.
+              Reposicionar nós não grava histórico.
+            </p>
+          </GCard>
 
-          <div className="grid grid-cols-2 gap-4">
-            <GCard>
-              <p className="text-sm font-semibold text-white/80 mb-3">Desfazer / Refazer</p>
-              <div className="flex gap-2 mb-3">
-                {['Ctrl+Z', 'Ctrl+Y'].map(k => (
-                  <kbd key={k} className="bg-white/[0.08] border border-white/[0.14] rounded px-2 py-1 text-xs font-mono text-amber-300">
-                    {k}
-                  </kbd>
-                ))}
-              </div>
-              <p className="text-xs text-white/45 leading-relaxed">
-                Stack de <strong className="text-white/70">20 snapshots</strong> — cópia profunda do grafo
-                antes de cada mutação estrutural (add/remove vértice ou aresta).
-                Reposicionamento não gera snapshot.
-              </p>
-            </GCard>
-
-            <Code>{`// Snapshot salvo antes de cada mutação estrutural
+          <Code>{`// Snapshot salvo antes de cada mutação estrutural
 addNode: (node) => {
-  const snap = graph.clone(); // O(V+E) deep copy
+  const snap = graph.clone(); // O(V+E) cópia profunda
   graph.addNode(node);
   set({ past: [snap, ...past].slice(0, 20),
         future: [] });
 }
 
-// Undo restaura e empurra state atual em future[]
+// Undo: restaura anterior, empurra atual em future[]
 undo: () => {
   const [prev, ...rest] = past;
   graph.fromSnapshot(prev);
   set({ past: rest, future: [current, ...future] });
 }`}</Code>
-          </div>
         </div>
       </div>
     </SlideShell>
@@ -500,6 +527,45 @@ undo: () => {
 }
 
 function S06Import() {
+  const formats = [
+    {
+      ext: '.osm', title: 'OpenStreetMap XML',
+      border: 'border-green-400/35 bg-green-500/[0.07]',
+      delay: 75,
+      items: [
+        'DOMParser nativo — sem dependência externa',
+        '18 tipos de highway aceitos',
+        'Distância via fórmula de Haversine',
+        'Coordenadas lat/lon → UTM Zona 23S',
+        'oneway/roundabout → aresta direcionada',
+      ],
+    },
+    {
+      ext: '.poly', title: 'Cartesiano (UFG)',
+      border: 'border-blue-400/35 bg-blue-500/[0.07]',
+      delay: 150,
+      items: [
+        'Formato oficial do professor',
+        'Peso: distância Euclidiana direta',
+        'Flag de direção por aresta (col. 4)',
+        'normalizeCoords + Y-flip para Cytoscape',
+        'Campus UFG: ~5k nós, ~7k arestas',
+      ],
+    },
+    {
+      ext: '.txt', title: '3 sub-formatos',
+      border: 'border-amber-400/35 bg-amber-500/[0.07]',
+      delay: 225,
+      items: [
+        'Auto-detecção de formato na leitura',
+        '① "src dst peso [dir]" por linha',
+        '② blocos NODES / EDGES',
+        '③ lista de adjacência "nó: vizinhos"',
+        'Layout circular automático para .txt',
+      ],
+    },
+  ];
+
   return (
     <SlideShell
       accentFrom="rgba(6,182,212,0.8)"
@@ -507,50 +573,21 @@ function S06Import() {
       orbA="rgba(6,182,212,0.13)"
       orbB="rgba(14,165,233,0.10)"
     >
-      <div className="mb-5">
+      <div className="mb-4 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
         <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF01</p>
         <h2 className="text-3xl font-bold text-white">Importação de Mapas</h2>
+        <p className="text-white/40 text-sm mt-1">3 formatos suportados — parsing 100% client-side, sem servidor</p>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
         <div className="flex-1 flex flex-col gap-3 min-w-0">
           <div className="grid grid-cols-3 gap-4">
-            {[
-              {
-                ext: '.osm', title: 'OpenStreetMap XML',
-                border: 'border-green-400/35 bg-green-500/[0.07]',
-                items: [
-                  'DOMParser nativo (sem lib)',
-                  '18 tipos de highway aceitos',
-                  'Peso via fórmula de Haversine',
-                  'Coordenadas → UTM Zona 23S',
-                  'oneway/roundabout → direcionada',
-                ],
-              },
-              {
-                ext: '.poly', title: 'Cartesiano (UFG)',
-                border: 'border-blue-400/35 bg-blue-500/[0.07]',
-                items: [
-                  'Formato do professor',
-                  'Peso: distância Euclidiana',
-                  'Flag de direção por aresta',
-                  'normalizeCoords + Y-flip',
-                  'Campus UFG: ~5k nós, ~7k arestas',
-                ],
-              },
-              {
-                ext: '.txt', title: '3 sub-formatos',
-                border: 'border-amber-400/35 bg-amber-500/[0.07]',
-                items: [
-                  'Auto-detecção de formato',
-                  '① src dst peso [dir]',
-                  '② NODES / EDGES sections',
-                  '③ nó: vizinhos (adj. list)',
-                  'Layout circular automático',
-                ],
-              },
-            ].map(({ ext, title, border, items }) => (
-              <div key={ext} className={`rounded-2xl border px-4 py-3 ${border}`}>
+            {formats.map(({ ext, title, border, delay, items }) => (
+              <div
+                key={ext}
+                className={`rounded-2xl border px-4 py-3 animate-in fade-in zoom-in-95 duration-400 fill-mode-both ${border}`}
+                style={{ animationDelay: `${delay}ms` }}
+              >
                 <p className="text-xl font-mono font-bold text-white/85 mb-0.5">{ext}</p>
                 <p className="text-[10px] text-white/35 mb-3">{title}</p>
                 {items.map(item => <p key={item} className="text-xs text-white/55 py-0.5">{item}</p>)}
@@ -558,19 +595,21 @@ function S06Import() {
             ))}
           </div>
 
-          <Code>{`// osmParser.ts — Haversine + UTM Zone 23S
+          <div className="animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-300">
+            <Code>{`// osmParser.ts — Haversine para distância geográfica real
 const dist = haversineDistance(lat1, lon1, lat2, lon2);
-//   = R · 2 · atan2(√a, √(1−a))  onde a = sin²(Δlat/2) + cos·cos·sin²(Δlon/2)
+//   = R · 2 · atan2(√a, √(1−a))   onde a = sin²(Δlat/2) + cos·cos·sin²(Δlon/2)
 
-const { x, y } = latLonToUTM(lat, lon);  // WGS84 → metros (zona 23S)
-const nodes    = normalizeCoords(utm);    // reduzirEscala + Y-flip (ref: ConverteMapaParaGrafo.c)`}</Code>
+const { x, y } = latLonToUTM(lat, lon);  // WGS84 → metros (zona 23S, Goiânia)
+const nodes    = normalizeCoords(utm);    // escala + Y-flip (ref: ConverteMapaParaGrafo.c)`}</Code>
+          </div>
         </div>
 
-        <div className="w-52 flex flex-col gap-3">
+        <div className="w-52 flex flex-col gap-3 animate-in fade-in slide-in-from-right-3 duration-500 fill-mode-both delay-200">
           {[
-            { val: '~5.000', sub: 'nós · campus.osm',    color: 'text-green-300', border: 'border-green-400/30 bg-green-500/[0.08]' },
-            { val: '~7.000', sub: 'arestas · campus.poly', color: 'text-blue-300', border: 'border-blue-400/30 bg-blue-500/[0.08]' },
-            { val: '< 2 s',  sub: 'parse + render',       color: 'text-orange-300', border: 'border-orange-400/30 bg-orange-500/[0.08]' },
+            { val: '~5.000', sub: 'nós · campus.osm',      color: 'text-green-300',  border: 'border-green-400/30 bg-green-500/[0.08]' },
+            { val: '~7.000', sub: 'arestas · campus.poly',  color: 'text-blue-300',   border: 'border-blue-400/30 bg-blue-500/[0.08]' },
+            { val: '< 2 s',  sub: 'parse + render',         color: 'text-orange-300', border: 'border-orange-400/30 bg-orange-500/[0.08]' },
           ].map(({ val, sub, color, border }) => (
             <GCard key={val} className={`text-center ${border}`}>
               <p className={`text-3xl font-black ${color} mb-1`}>{val}</p>
@@ -580,7 +619,7 @@ const nodes    = normalizeCoords(utm);    // reduzirEscala + Y-flip (ref: Conver
           <GCard>
             <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">Mapas pré-carregados</p>
             <p className="text-xs text-white/50 leading-relaxed">
-              Campus UFG disponível com um clique na toolbar — formatos .osm e .poly prontos para uso.
+              Campus UFG disponível com um clique na toolbar — formatos .osm e .poly prontos para uso imediato.
             </p>
           </GCard>
         </div>
@@ -590,6 +629,15 @@ const nodes    = normalizeCoords(utm);    // reduzirEscala + Y-flip (ref: Conver
 }
 
 function S07Stats() {
+  const stats = [
+    { label: 'Distância Total',    value: '2.847 m',  sub: 'cost acumulado do caminho',      tone: 'border-orange-400/40 bg-orange-500/[0.10] text-orange-200' },
+    { label: 'Nós no Caminho',     value: '47',        sub: 'path.length — vértices visitados', tone: 'border-blue-400/40 bg-blue-500/[0.10] text-blue-200' },
+    { label: 'Tempo de Execução',  value: '3,24 ms',   sub: 'performance.now() — alta precisão', tone: 'border-white/[0.12] bg-white/[0.05] text-white/90' },
+    { label: 'Nós Explorados',     value: '312',        sub: 'extrações do MinHeap',             tone: 'border-white/[0.12] bg-white/[0.05] text-white/90' },
+    { label: 'Vértices do Grafo',  value: '4.987',      sub: 'graph.nodeCount',                 tone: 'border-green-400/40 bg-green-500/[0.10] text-green-200' },
+    { label: 'Arestas do Grafo',   value: '7.043',      sub: 'graph.edgeCount (sem _rev)',       tone: 'border-white/[0.12] bg-white/[0.05] text-white/90' },
+  ];
+
   return (
     <SlideShell
       accentFrom="rgba(99,102,241,0.8)"
@@ -597,22 +645,20 @@ function S07Stats() {
       orbA="rgba(99,102,241,0.13)"
       orbB="rgba(139,92,246,0.11)"
     >
-      <div className="mb-5">
+      <div className="mb-4 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
         <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF07</p>
         <h2 className="text-3xl font-bold text-white">Estatísticas em Tempo Real</h2>
+        <p className="text-white/40 text-sm mt-1">Painel lateral atualizado a cada execução do Dijkstra</p>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
         <div className="flex-1 grid grid-cols-3 gap-3 content-start">
-          {[
-            { label: 'Distância Total',    value: '2.847 m',  sub: 'cost/1000 → km',              tone: 'border-orange-400/40 bg-orange-500/[0.10] text-orange-200' },
-            { label: 'Pontos no Caminho',  value: '47 pts',   sub: 'path.length',                 tone: 'border-blue-400/40 bg-blue-500/[0.10] text-blue-200' },
-            { label: 'Tempo de Execução',  value: '3.24 ms',  sub: 'performance.now()',            tone: 'border-white/[0.12] bg-white/[0.05] text-white/90' },
-            { label: 'Nós Explorados',     value: '312',      sub: 'extrações do MinHeap',        tone: 'border-white/[0.12] bg-white/[0.05] text-white/90' },
-            { label: 'Vértices do Grafo',  value: '4.987',    sub: 'graph.nodeCount',             tone: 'border-green-400/40 bg-green-500/[0.10] text-green-200' },
-            { label: 'Arestas do Grafo',   value: '7.043',    sub: 'graph.edgeCount (sem _rev)',   tone: 'border-white/[0.12] bg-white/[0.05] text-white/90' },
-          ].map(({ label, value, sub, tone }) => (
-            <div key={label} className={`rounded-2xl border px-4 py-4 ${tone}`}>
+          {stats.map(({ label, value, sub, tone }, i) => (
+            <div
+              key={label}
+              className={`rounded-2xl border px-4 py-4 animate-in fade-in zoom-in-95 duration-300 fill-mode-both ${tone}`}
+              style={{ animationDelay: `${75 + i * 50}ms` }}
+            >
               <p className="text-2xl font-black mb-1 tabular-nums">{value}</p>
               <p className="text-xs font-semibold mb-0.5">{label}</p>
               <p className="text-[10px] opacity-45 font-mono">{sub}</p>
@@ -620,7 +666,7 @@ function S07Stats() {
           ))}
         </div>
 
-        <div className="w-60 flex flex-col gap-3">
+        <div className="w-60 flex flex-col gap-3 animate-in fade-in slide-in-from-right-3 duration-500 fill-mode-both delay-200">
           <GCard>
             <p className="text-[10px] text-white/35 uppercase tracking-wider mb-3">Seleção Ativa</p>
             {[
@@ -637,14 +683,14 @@ function S07Stats() {
           <GCard className="border-red-400/25 bg-red-500/[0.07]">
             <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">Sem caminho</p>
             <p className="text-xs font-medium text-red-200 leading-relaxed">
-              Exibe alerta vermelho + toast de notificação quando destino é inacessível.
+              Alerta vermelho + toast de notificação quando o destino é inacessível a partir da origem.
             </p>
           </GCard>
 
           <GCard>
             <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">Painel minimizável</p>
             <p className="text-xs text-white/45 leading-relaxed">
-              Pode ser colapsado para liberar espaço no canvas; restaurado sem perda de dados.
+              Colapsa com um clique para liberar espaço no canvas; restaurado sem perda de dados.
             </p>
           </GCard>
         </div>
@@ -661,22 +707,23 @@ function S08Minor() {
       orbA="rgba(244,63,94,0.11)"
       orbB="rgba(159,18,57,0.10)"
     >
-      <div className="mb-6">
+      <div className="mb-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
         <h2 className="text-3xl font-bold text-white">Requisitos Complementares</h2>
-        <p className="text-white/35 text-sm mt-1">RF02 · RF03 · RF08</p>
+        <p className="text-white/35 text-sm mt-1">RF02 · RF03 · RF08 — interface visual e exportação</p>
       </div>
 
       <div className="grid grid-cols-3 gap-6 flex-1 content-start">
         {/* RF02 */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono text-white/30">RF02</span>
-          </div>
+        <div
+          className="flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both"
+          style={{ animationDelay: '75ms' }}
+        >
+          <span className="text-[10px] font-mono text-white/30">RF02</span>
           <GCard>
             <p className="text-base font-semibold text-white/85 mb-4">Enumeração e Rotulagem</p>
             {[
-              { icon: '○', key: 'Vértices', desc: 'alterna visibilidade dos nós no canvas' },
-              { icon: '⌗', key: 'Pesos',    desc: 'exibe peso de cada aresta como rótulo' },
+              { icon: '○', key: 'Vértices', desc: 'alterna visibilidade dos IDs nos nós do canvas' },
+              { icon: '⌗', key: 'Pesos',    desc: 'exibe o peso de cada aresta como rótulo flutuante' },
             ].map(({ icon, key, desc }) => (
               <div key={key} className="flex items-start gap-2 mb-3 bg-blue-500/[0.06] border border-blue-400/20 rounded-xl px-3 py-2">
                 <span className="text-base leading-none mt-0.5">{icon}</span>
@@ -687,23 +734,24 @@ function S08Minor() {
               </div>
             ))}
             <p className="text-[10px] text-white/30 leading-relaxed">
-              Útil no mapa UFG: ocultar ~5.000 nós mantém visibilidade das arestas.
+              No mapa UFG com ~5.000 nós, ocultar IDs mantém as arestas legíveis.
             </p>
           </GCard>
         </div>
 
         {/* RF03 */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono text-white/30">RF03</span>
-          </div>
+        <div
+          className="flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both"
+          style={{ animationDelay: '150ms' }}
+        >
+          <span className="text-[10px] font-mono text-white/30">RF03</span>
           <GCard>
-            <p className="text-base font-semibold text-white/85 mb-4">Cores Distintas</p>
+            <p className="text-base font-semibold text-white/85 mb-4">Cores Distintas por Estado</p>
             {[
               { color: '#27AE60', label: 'Origem (A)' },
               { color: '#E74C3C', label: 'Destino (B)' },
               { color: '#F39C12', label: 'Caminho mínimo' },
-              { color: '#6B7280', label: 'Nós visitados' },
+              { color: '#6B7280', label: 'Nós explorados' },
               { color: '#2563EB', label: 'Arestas da rota' },
               { color: '#4A90D9', label: 'Padrão' },
             ].map(({ color, label }) => (
@@ -717,14 +765,16 @@ function S08Minor() {
         </div>
 
         {/* RF08 */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono text-white/30">RF08</span>
-          </div>
+        <div
+          className="flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both"
+          style={{ animationDelay: '225ms' }}
+        >
+          <span className="text-[10px] font-mono text-white/30">RF08</span>
           <GCard>
-            <p className="text-base font-semibold text-white/85 mb-3">Exportar Imagem</p>
+            <p className="text-base font-semibold text-white/85 mb-3">Exportar Imagem PNG</p>
             <p className="text-xs text-white/50 mb-4 leading-relaxed">
-              Botão de câmera na toolbar: canvas Cytoscape exportado como PNG e enviado para a área de transferência via Clipboard API.
+              Botão de câmera na toolbar captura o canvas inteiro do Cytoscape como PNG
+              e envia direto para a área de transferência via Clipboard API — pronto para colar.
             </p>
             <Code>{`cy.png({ full: true,
          bg: '#070710' })
@@ -749,57 +799,55 @@ function S09Arch() {
       orbA="rgba(100,116,139,0.10)"
       orbB="rgba(71,85,105,0.08)"
     >
-      <div className="mb-5">
+      <div className="mb-4 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
         <p className="text-xs text-white/30 uppercase tracking-widest mb-1">Implementação</p>
-        <h2 className="text-3xl font-bold text-white">Arquitetura e Stack</h2>
+        <h2 className="text-3xl font-bold text-white">Arquitetura em Camadas</h2>
+        <p className="text-white/40 text-sm mt-1">UI → Domínio → Utils — cada camada com responsabilidade única</p>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-75">
           <Code>{`src/
 ├── app/
-│   ├── page.tsx              ← SPA root (monta canvas + toolbar)
-│   ├── docs/page.tsx         ← documentação técnica
+│   ├── page.tsx              ← SPA root — monta canvas + toolbar
+│   ├── docs/page.tsx         ← documentação técnica interativa
 │   └── slides/page.tsx       ← esta apresentação
 │
-├── components/               ← CAMADA UI
+├── components/               ── CAMADA UI ──────────────────────
 │   ├── GraphCanvas.tsx       ← Cytoscape.js wrapper (ssr: false)
-│   ├── Toolbar.tsx           ← ferramentas + importação de arquivos
-│   ├── StatsPanel.tsx        ← painel de resultados do Dijkstra
+│   ├── Toolbar.tsx           ← modos de interação + importação
+│   ├── StatsPanel.tsx        ← resultados do Dijkstra
 │   └── ContextMenu.tsx       ← menu de contexto (botão direito)
 │
 ├── hooks/
-│   └── useGraph.ts           ← STORE ZUSTAND — estado global + undo/redo
+│   └── useGraph.ts           ── STORE ZUSTAND ─ estado + undo/redo
 │
 └── lib/
-    ├── graph/                ← DOMÍNIO
-    │   ├── Graph.ts          ← adjacency list Map<NodeId, GraphEdge[]>
-    │   ├── dijkstra.ts       ← MinHeap + Dijkstra com terminação antecipada
-    │   └── types.ts          ← interfaces TypeScript
-    ├── parsers/              ← DOMÍNIO
-    │   ├── osmParser.ts      ← DOMParser + Haversine + UTM Zone 23S
+    ├── graph/                ── DOMÍNIO ────────────────────────
+    │   ├── Graph.ts          ← adjacency list Map<NodeId, Edge[]>
+    │   ├── dijkstra.ts       ← MinHeap + terminação antecipada
+    │   └── types.ts          ← interfaces TypeScript compartilhadas
+    ├── parsers/              ── DOMÍNIO ────────────────────────
+    │   ├── osmParser.ts      ← DOMParser + Haversine + UTM 23S
     │   ├── polyParser.ts     ← formato cartesiano do professor
-    │   └── txtParser.ts      ← 3 sub-formatos auto-detectados
+    │   └── txtParser.ts      ← 3 sub-formatos com auto-detecção
     └── utils/
-        ├── coordinates.ts    ← UTM Zone 23S + normalizeCoords
+        ├── coordinates.ts    ← UTM Zona 23S + normalizeCoords
         └── clipboard.ts      ← Cytoscape PNG → Clipboard API`}</Code>
         </div>
 
-        <div className="w-56 flex flex-col gap-3">
+        <div className="w-60 flex flex-col gap-3 animate-in fade-in slide-in-from-right-3 duration-500 fill-mode-both delay-150">
           <GCard>
-            <p className="text-[10px] text-white/35 uppercase tracking-wider mb-3">Stack</p>
+            <p className="text-[10px] text-white/35 uppercase tracking-wider mb-3">Princípios de design</p>
             <div className="space-y-2">
               {[
-                { tech: 'Next.js 15',      desc: 'App Router' },
-                { tech: 'TypeScript 5',    desc: 'tipagem estrita' },
-                { tech: 'Cytoscape.js',    desc: 'render do grafo' },
-                { tech: 'Zustand 5',       desc: 'estado global' },
-                { tech: 'Tailwind CSS 4',  desc: 'FluidGlass UI' },
-              ].map(({ tech, desc }) => (
-                <div key={tech} className="flex items-center gap-2">
-                  <span className="text-green-400/60 text-xs">▸</span>
-                  <span className="text-xs font-semibold text-white/75">{tech}</span>
-                  <span className="text-[10px] text-white/30">· {desc}</span>
+                { icon: '◈', label: 'UI só fala com hooks', c: 'text-blue-300' },
+                { icon: '◈', label: 'Domínio sem React',    c: 'text-purple-300' },
+                { icon: '◈', label: 'Parsers stateless',    c: 'text-green-300' },
+              ].map(({ icon, label, c }) => (
+                <div key={label} className="flex items-center gap-2">
+                  <span className={`text-xs ${c}`}>{icon}</span>
+                  <span className="text-xs text-white/60">{label}</span>
                 </div>
               ))}
             </div>
@@ -809,14 +857,17 @@ function S09Arch() {
             <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">Re-render preciso</p>
             <p className="text-xs text-white/45 leading-relaxed">
               <span className="font-mono text-amber-300">graphVersion++</span> a cada mutação.
-              Única dependência do <span className="font-mono text-amber-300">useMemo</span> no GraphCanvas — evita re-render desnecessário.
+              Única dependência do <span className="font-mono text-amber-300">useMemo</span> no
+              GraphCanvas — evita re-render sem motivo.
             </p>
           </GCard>
 
           <GCard>
-            <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">100% client-side</p>
+            <p className="text-[10px] text-white/35 uppercase tracking-wider mb-2">SSR desabilitado</p>
             <p className="text-xs text-white/45 leading-relaxed">
-              Sem servidor. Cytoscape.js carregado com <span className="font-mono text-amber-300">ssr: false</span> por requerer <span className="font-mono text-amber-300">window</span>.
+              Cytoscape.js acessa <span className="font-mono text-amber-300">window</span> no load —
+              carregado com <span className="font-mono text-amber-300">dynamic(ssr: false)</span> para
+              funcionar no Next.js App Router.
             </p>
           </GCard>
         </div>
@@ -825,7 +876,107 @@ function S09Arch() {
   );
 }
 
-function S10Demo() {
+function S10Stack() {
+  const techs = [
+    {
+      name: 'Next.js 15',
+      icon: '▲',
+      desc: 'App Router com SSR desabilitado no canvas — roteamento zero-config',
+      color: 'border-white/20 bg-white/[0.06]',
+      iconColor: 'text-white',
+    },
+    {
+      name: 'TypeScript 5',
+      icon: '{ }',
+      desc: 'Tipagem estrita end-to-end — interfaces compartilhadas entre parsers, domínio e UI',
+      color: 'border-blue-400/30 bg-blue-500/[0.07]',
+      iconColor: 'text-blue-300',
+    },
+    {
+      name: 'Cytoscape.js',
+      icon: '◉',
+      desc: 'Renderiza 5.000 nós e 7.000 arestas sem travar — estilo FluidGlass via stylesheet',
+      color: 'border-purple-400/30 bg-purple-500/[0.07]',
+      iconColor: 'text-purple-300',
+    },
+    {
+      name: 'Zustand 5',
+      icon: '⊛',
+      desc: 'Estado global do grafo + stack de undo/redo com 20 snapshots por store única',
+      color: 'border-orange-400/30 bg-orange-500/[0.07]',
+      iconColor: 'text-orange-300',
+    },
+    {
+      name: 'Tailwind CSS 4',
+      icon: '◈',
+      desc: 'FluidGlass design system — backdrop-blur, gradientes e glass tokens sem CSS manual',
+      color: 'border-cyan-400/30 bg-cyan-500/[0.07]',
+      iconColor: 'text-cyan-300',
+    },
+    {
+      name: 'shadcn/ui',
+      icon: '◻',
+      desc: 'Componentes acessíveis como base — customizados para o tema escuro FluidGlass',
+      color: 'border-green-400/30 bg-green-500/[0.07]',
+      iconColor: 'text-green-300',
+    },
+  ];
+
+  return (
+    <SlideShell
+      accentFrom="rgba(148,163,184,0.6)"
+      accentTo="rgba(226,232,240,0.7)"
+      orbA="rgba(59,130,246,0.10)"
+      orbB="rgba(139,92,246,0.08)"
+    >
+      <div className="mb-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
+        <p className="text-xs text-white/30 uppercase tracking-widest mb-1">Tecnologias</p>
+        <h2 className="text-3xl font-bold text-white">Stack Tecnológico</h2>
+        <p className="text-white/40 text-sm mt-1">Cada ferramenta escolhida por uma razão específica</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 flex-1 content-start">
+        {techs.map(({ name, icon, desc, color, iconColor }, i) => (
+          <div
+            key={name}
+            className={`rounded-2xl border px-5 py-4 flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-400 fill-mode-both ${color}`}
+            style={{ animationDelay: `${75 + i * 70}ms` }}
+          >
+            <div className="flex items-center gap-3">
+              <span className={`text-2xl font-black font-mono leading-none ${iconColor}`}>{icon}</span>
+              <span className="text-base font-bold text-white/90">{name}</span>
+            </div>
+            <p className="text-xs text-white/50 leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Vercel deploy banner */}
+      <div
+        className="mt-4 rounded-2xl border border-white/[0.16] bg-white/[0.04] px-6 py-4 flex items-center gap-5 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both"
+        style={{ animationDelay: '570ms' }}
+      >
+        <span className="text-3xl font-black text-white leading-none">▲</span>
+        <div>
+          <p className="text-sm font-bold text-white/85">Hospedado na Vercel</p>
+          <p className="text-xs text-white/40 mt-0.5">Deploy automático via Git push — zero configuração de servidor</p>
+        </div>
+        <div className="ml-auto flex gap-2 flex-wrap justify-end">
+          {['Edge Network global', 'HTTPS automático', 'Preview por branch', 'Zero cold start'].map(f => (
+            <span
+              key={f}
+              className="text-[10px] text-white/35 bg-white/[0.05] border border-white/[0.10] rounded-full px-3 py-1"
+            >
+              {f}
+            </span>
+          ))}
+        </div>
+      </div>
+    </SlideShell>
+  );
+}
+
+function S11Demo() {
   return (
     <SlideShell
       accentFrom="rgba(59,130,246,0.8)"
@@ -834,19 +985,20 @@ function S10Demo() {
       orbB="rgba(139,92,246,0.14)"
     >
       <div className="flex-1 flex flex-col items-center justify-center text-center">
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-10 animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-0">
           <Pill color="green">8 / 8 Requisitos</Pill>
+          <Pill color="white">▲ Vercel</Pill>
           <Pill color="blue">AED2 · UFG · 2026-1</Pill>
         </div>
 
-        <h1 className="text-[5rem] font-black text-white leading-none mb-3 tracking-tight">
+        <h1 className="text-[5rem] font-black text-white leading-none mb-3 tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both delay-75">
           Demonstração
         </h1>
-        <p className="text-lg text-white/45 mb-12 max-w-md leading-relaxed">
-          Carregue o Campus UFG, selecione dois pontos e veja o Dijkstra em ação em tempo real.
+        <p className="text-lg text-white/45 mb-12 max-w-md leading-relaxed animate-in fade-in duration-500 fill-mode-both delay-150">
+          Carregue o Campus UFG, selecione dois pontos e veja o Dijkstra encontrar o caminho mínimo em tempo real.
         </p>
 
-        <div className="flex gap-4 justify-center mb-14">
+        <div className="flex gap-4 justify-center mb-14 animate-in fade-in zoom-in-95 duration-400 fill-mode-both delay-300">
           <Link
             href="/"
             className="px-10 py-4 rounded-2xl bg-blue-500/[0.28] border border-blue-400/55 text-blue-100 text-base font-semibold hover:bg-blue-500/[0.40] transition-all duration-200"
@@ -861,7 +1013,7 @@ function S10Demo() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-4 gap-4 max-w-xl">
+        <div className="grid grid-cols-4 gap-4 max-w-xl animate-in fade-in slide-in-from-bottom-3 duration-500 fill-mode-both delay-500">
           {[
             { label: 'Dijkstra',   value: 'O((V+E) log V)', color: 'text-blue-300' },
             { label: 'MinHeap',    value: 'O(log n)',        color: 'text-purple-300' },
@@ -891,7 +1043,8 @@ const SLIDES: { Component: () => React.ReactNode; title: string }[] = [
   { Component: S07Stats,    title: 'RF07 · Estatísticas' },
   { Component: S08Minor,    title: 'RF02/03/08' },
   { Component: S09Arch,     title: 'Arquitetura' },
-  { Component: S10Demo,     title: 'Demo' },
+  { Component: S10Stack,    title: 'Stack · Vercel' },
+  { Component: S11Demo,     title: 'Demo' },
 ];
 
 // ── page ─────────────────────────────────────────────────────────────────────
@@ -923,7 +1076,10 @@ export default function SlidesPage() {
   const { Component } = SLIDES[cur];
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[#070710]" style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif" }}>
+    <div
+      className="fixed inset-0 overflow-hidden bg-[#070710]"
+      style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif" }}
+    >
       {/* slide area */}
       <div key={cur} className="absolute inset-0 animate-in fade-in duration-200">
         <Component />
