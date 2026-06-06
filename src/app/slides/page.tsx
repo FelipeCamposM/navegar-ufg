@@ -51,14 +51,6 @@ function Pill({
   );
 }
 
-function PtsPill({ v }: { v: string }) {
-  return (
-    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-orange-500/[0.22] border border-orange-400/50 text-orange-200">
-      {v} pts
-    </span>
-  );
-}
-
 function Code({ children }: { children: string }) {
   return (
     <pre className="bg-black/50 border border-white/[0.08] rounded-xl px-4 py-3 text-[11px] font-mono text-emerald-300 leading-relaxed overflow-x-auto whitespace-pre">
@@ -149,7 +141,6 @@ function S01Cover() {
         <div className="max-w-2xl">
           <div className="flex flex-wrap items-center gap-2 mb-8">
             <Pill color="blue">AED2 · UFG · 2026-1</Pill>
-            <Pill color="orange">6,00 pts</Pill>
             <Pill color="green">Entrega 01/06/2026</Pill>
           </div>
 
@@ -195,14 +186,14 @@ function S01Cover() {
 
 function S02Reqs() {
   const rows = [
-    { id: 'RF04', pts: '1,50', desc: 'Calcular caminho mínimo — Dijkstra',      tone: 'border-orange-400/50 bg-orange-500/[0.10]' },
-    { id: 'RF06', pts: '1,30', desc: 'Grafos direcionados e não-direcionados',   tone: 'border-yellow-400/40 bg-yellow-500/[0.08]' },
-    { id: 'RF05', pts: '1,10', desc: 'Criar e editar grafos',                    tone: 'border-amber-400/40 bg-amber-500/[0.08]' },
-    { id: 'RF01', pts: '0,75', desc: 'Importar mapas (.osm · .poly · .txt)',     tone: 'border-blue-400/30 bg-blue-500/[0.07]' },
-    { id: 'RF07', pts: '0,75', desc: 'Exibir estatísticas do algoritmo',         tone: 'border-blue-400/30 bg-blue-500/[0.07]' },
-    { id: 'RF02', pts: '0,20', desc: 'Enumerar vértices · rotular pesos',        tone: 'border-white/[0.14] bg-white/[0.04]' },
-    { id: 'RF03', pts: '0,20', desc: 'Seleção de origem/destino com cores',      tone: 'border-white/[0.14] bg-white/[0.04]' },
-    { id: 'RF08', pts: '0,20', desc: 'Copiar imagem do grafo (PNG)',             tone: 'border-white/[0.14] bg-white/[0.04]' },
+    { id: 'RF04', desc: 'Calcular caminho mínimo — Dijkstra',      tone: 'border-orange-400/50 bg-orange-500/[0.10]' },
+    { id: 'RF06', desc: 'Grafos direcionados e não-direcionados',   tone: 'border-yellow-400/40 bg-yellow-500/[0.08]' },
+    { id: 'RF05', desc: 'Criar e editar grafos',                    tone: 'border-amber-400/40 bg-amber-500/[0.08]' },
+    { id: 'RF01', desc: 'Importar mapas (.osm · .poly · .txt)',     tone: 'border-blue-400/30 bg-blue-500/[0.07]' },
+    { id: 'RF07', desc: 'Exibir estatísticas do algoritmo',         tone: 'border-blue-400/30 bg-blue-500/[0.07]' },
+    { id: 'RF02', desc: 'Enumerar vértices · rotular pesos',        tone: 'border-white/[0.14] bg-white/[0.04]' },
+    { id: 'RF03', desc: 'Seleção de origem/destino com cores',      tone: 'border-white/[0.14] bg-white/[0.04]' },
+    { id: 'RF08', desc: 'Copiar imagem do grafo (PNG)',             tone: 'border-white/[0.14] bg-white/[0.04]' },
   ];
 
   return (
@@ -212,22 +203,16 @@ function S02Reqs() {
       orbA="rgba(251,146,60,0.12)"
       orbB="rgba(245,158,11,0.10)"
     >
-      <div className="mb-5 flex items-end justify-between">
-        <div>
-          <p className="text-xs text-white/30 uppercase tracking-widest mb-1">Visão Geral</p>
-          <h2 className="text-3xl font-bold text-white">Requisitos Funcionais</h2>
-        </div>
-        <span className="text-sm text-orange-300 font-bold">Total: 6,00 pts</span>
+      <div className="mb-5">
+        <p className="text-xs text-white/30 uppercase tracking-widest mb-1">Visão Geral</p>
+        <h2 className="text-3xl font-bold text-white">Requisitos Funcionais</h2>
       </div>
 
       <div className="grid grid-cols-4 gap-3 flex-1 content-start">
         {rows.map(r => (
           <div key={r.id} className={`rounded-2xl border px-4 py-3 flex flex-col justify-between ${r.tone}`}>
             <div>
-              <div className="flex items-start justify-between mb-2">
-                <span className="text-[10px] font-mono text-white/35">{r.id}</span>
-                <span className="text-base font-black text-orange-300">{r.pts}</span>
-              </div>
+              <span className="text-[10px] font-mono text-white/35 mb-2 block">{r.id}</span>
               <p className="text-sm text-white/75 leading-snug">{r.desc}</p>
             </div>
             <p className="text-[10px] text-green-400/80 font-semibold mt-3">✓ Implementado</p>
@@ -246,12 +231,9 @@ function S03Dijkstra() {
       orbA="rgba(59,130,246,0.18)"
       orbB="rgba(6,182,212,0.12)"
     >
-      <div className="mb-5 flex items-center gap-4">
-        <div>
-          <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF04</p>
-          <h2 className="text-3xl font-bold text-white">Algoritmo de Dijkstra</h2>
-        </div>
-        <PtsPill v="1,50" />
+      <div className="mb-5">
+        <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF04</p>
+        <h2 className="text-3xl font-bold text-white">Algoritmo de Dijkstra</h2>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
@@ -343,12 +325,9 @@ function S04Directed() {
       orbA="rgba(139,92,246,0.14)"
       orbB="rgba(109,40,217,0.12)"
     >
-      <div className="mb-5 flex items-center gap-4">
-        <div>
-          <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF06</p>
-          <h2 className="text-3xl font-bold text-white">Grafos Direcionados e Não-Direcionados</h2>
-        </div>
-        <PtsPill v="1,30" />
+      <div className="mb-5">
+        <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF06</p>
+        <h2 className="text-3xl font-bold text-white">Grafos Direcionados e Não-Direcionados</h2>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
@@ -456,12 +435,9 @@ function S05Editing() {
       orbA="rgba(16,185,129,0.13)"
       orbB="rgba(5,150,105,0.10)"
     >
-      <div className="mb-5 flex items-center gap-4">
-        <div>
-          <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF05</p>
-          <h2 className="text-3xl font-bold text-white">Criação e Edição de Grafos</h2>
-        </div>
-        <PtsPill v="1,10" />
+      <div className="mb-5">
+        <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF05</p>
+        <h2 className="text-3xl font-bold text-white">Criação e Edição de Grafos</h2>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
@@ -531,12 +507,9 @@ function S06Import() {
       orbA="rgba(6,182,212,0.13)"
       orbB="rgba(14,165,233,0.10)"
     >
-      <div className="mb-5 flex items-center gap-4">
-        <div>
-          <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF01</p>
-          <h2 className="text-3xl font-bold text-white">Importação de Mapas</h2>
-        </div>
-        <PtsPill v="0,75" />
+      <div className="mb-5">
+        <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF01</p>
+        <h2 className="text-3xl font-bold text-white">Importação de Mapas</h2>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
@@ -624,12 +597,9 @@ function S07Stats() {
       orbA="rgba(99,102,241,0.13)"
       orbB="rgba(139,92,246,0.11)"
     >
-      <div className="mb-5 flex items-center gap-4">
-        <div>
-          <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF07</p>
-          <h2 className="text-3xl font-bold text-white">Estatísticas em Tempo Real</h2>
-        </div>
-        <PtsPill v="0,75" />
+      <div className="mb-5">
+        <p className="text-xs text-white/30 uppercase tracking-widest mb-1">RF07</p>
+        <h2 className="text-3xl font-bold text-white">Estatísticas em Tempo Real</h2>
       </div>
 
       <div className="flex gap-5 flex-1 min-h-0">
@@ -693,7 +663,7 @@ function S08Minor() {
     >
       <div className="mb-6">
         <h2 className="text-3xl font-bold text-white">Requisitos Complementares</h2>
-        <p className="text-white/35 text-sm mt-1">RF02 · RF03 · RF08 — 0,60 pt no total</p>
+        <p className="text-white/35 text-sm mt-1">RF02 · RF03 · RF08</p>
       </div>
 
       <div className="grid grid-cols-3 gap-6 flex-1 content-start">
@@ -701,7 +671,6 @@ function S08Minor() {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-mono text-white/30">RF02</span>
-            <Pill color="orange">0,20 pt</Pill>
           </div>
           <GCard>
             <p className="text-base font-semibold text-white/85 mb-4">Enumeração e Rotulagem</p>
@@ -727,7 +696,6 @@ function S08Minor() {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-mono text-white/30">RF03</span>
-            <Pill color="orange">0,20 pt</Pill>
           </div>
           <GCard>
             <p className="text-base font-semibold text-white/85 mb-4">Cores Distintas</p>
@@ -752,7 +720,6 @@ function S08Minor() {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-mono text-white/30">RF08</span>
-            <Pill color="orange">0,20 pt</Pill>
           </div>
           <GCard>
             <p className="text-base font-semibold text-white/85 mb-3">Exportar Imagem</p>
@@ -869,7 +836,6 @@ function S10Demo() {
       <div className="flex-1 flex flex-col items-center justify-center text-center">
         <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
           <Pill color="green">8 / 8 Requisitos</Pill>
-          <Pill color="orange">6,00 pts</Pill>
           <Pill color="blue">AED2 · UFG · 2026-1</Pill>
         </div>
 

@@ -94,11 +94,11 @@ function buildStylesheet(
     // ── Dynamic class selectors ──────────────────────────────────────
     {
       selector: '.visited',
-      style: { 'background-color': colors.nodeVisited, width: 5, height: 5, opacity: 0.45, 'border-width': 0 } as Cytoscape.Css.Node,
+      style: { 'background-color': colors.nodeVisited, width: performanceMode ? 3 : 5, height: performanceMode ? 3 : 5, opacity: showNodes ? (performanceMode ? 0.25 : 0.45) : 0, 'border-width': 0 } as Cytoscape.Css.Node,
     },
     {
       selector: '.path-node',
-      style: { 'background-color': '#93C5FD', width: 5, height: 5, opacity: 0.6, 'border-width': 0, 'z-index': 8 } as Cytoscape.Css.Node,
+      style: { 'background-color': '#93C5FD', width: performanceMode ? 4 : 5, height: performanceMode ? 4 : 5, opacity: 0.7, 'border-width': 0, 'z-index': 8 } as Cytoscape.Css.Node,
     },
     {
       selector: '.path-edge',
@@ -124,6 +124,15 @@ function buildStylesheet(
         'line-color': '#1E3A8A', 'target-arrow-color': '#1E3A8A',
         width: 4, 'underlay-opacity': 0, 'z-index': 11,
       } as Cytoscape.Css.Edge,
+    },
+    {
+      selector: '.edge-src',
+      style: {
+        'background-color': '#8B5CF6', 'border-color': 'rgba(255,255,255,0.9)', 'border-width': 3,
+        width: 20, height: 20, opacity: 1,
+        'underlay-color': '#8B5CF6', 'underlay-opacity': 0.4, 'underlay-padding': 6,
+        'z-index': 20,
+      } as Cytoscape.Css.Node,
     },
     {
       selector: '.source',
@@ -199,7 +208,7 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
   useEffect(() => { storeRef.current = useGraph.getState(); });
 
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
-  const draggingFrom = useRef<NodeId | null>(null);
+  const edgeSrcId = useRef<NodeId | null>(null);
   const prevNavNodeRef = useRef<string | null>(null);
 
   const elements = useMemo(() => {
@@ -404,33 +413,86 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
 
     cy.removeAllListeners();
 
+    // All taps: dismiss context menu, select mode (fires even on node taps), addVertex on background
     cy.on('tap', (evt) => {
       setContextMenu(null);
-      const s = storeRef.current;
-      if (s.mode !== 'select') return;
-      const nearest = findNearestNode(cy, evt.position);
-      if (nearest) s.selectNode(nearest);
-    });
 
-    cy.on('tap', 'node', (evt) => {
-      const s = storeRef.current;
-      if (s.mode === 'delete') { evt.stopPropagation(); s.removeNode(evt.target.id()); }
-    });
+      // Cancel pending edge source only when clicking empty background
+      if (evt.target === cy && edgeSrcId.current) {
+        cy.$(`#${edgeSrcId.current}`).removeClass('edge-src');
+        edgeSrcId.current = null;
+      }
 
-    cy.on('tap', 'edge', (evt) => {
       const s = storeRef.current;
-      if (s.mode === 'delete') { evt.stopPropagation(); s.removeEdge(evt.target.id()); }
-    });
-
-    cy.on('tap', (evt) => {
-      if (evt.target !== cy) return;
-      const s = storeRef.current;
-      if (s.mode === 'addVertex') {
+      if (s.mode === 'select') {
+        const nearest = findNearestNode(cy, evt.position);
+        if (nearest) s.selectNode(nearest);
+      }
+      if (s.mode === 'addVertex' && evt.target === cy) {
         const pos = evt.position;
         nodeCounter++;
         const id = `v${nodeCounter}`;
         s.addNode({ id, label: id, x: pos.x, y: pos.y });
       }
+    });
+
+    // Node tap: delete, addEdge click-click, or context dismiss
+    cy.on('tap', 'node', (evt) => {
+      setContextMenu(null);
+      const s = storeRef.current;
+
+      if (s.mode === 'delete') {
+        evt.stopPropagation();
+        s.removeNode(evt.target.id());
+        return;
+      }
+
+      if (s.mode === 'addEdge') {
+        evt.stopPropagation();
+        const clickedId = evt.target.id() as NodeId;
+
+        if (!edgeSrcId.current) {
+          // First click — mark source
+          edgeSrcId.current = clickedId;
+          cy.$(`#${clickedId}`).addClass('edge-src');
+        } else if (edgeSrcId.current === clickedId) {
+          // Clicked same node — cancel
+          cy.$(`#${clickedId}`).removeClass('edge-src');
+          edgeSrcId.current = null;
+        } else {
+          // Second click — create edge
+          const srcId = edgeSrcId.current;
+          const tgtId = clickedId;
+          cy.$(`#${srcId}`).removeClass('edge-src');
+          edgeSrcId.current = null;
+
+          const srcNode = s.graph.getNodes().get(srcId);
+          const tgtNode = s.graph.getNodes().get(tgtId);
+          if (srcNode && tgtNode) {
+            const defaultWeight = Math.sqrt(
+              (srcNode.x - tgtNode.x) ** 2 + (srcNode.y - tgtNode.y) ** 2
+            );
+            const raw = window.prompt('Peso da aresta (metros):', defaultWeight.toFixed(2));
+            if (raw !== null) {
+              const weight = parseFloat(raw) || defaultWeight;
+              s.addEdge({
+                id: `e_${srcId}_${tgtId}_${Date.now()}`,
+                source: srcId,
+                target: tgtId,
+                weight,
+                directed: s.graphType === 'directed',
+              });
+            }
+          }
+        }
+        return;
+      }
+    });
+
+    cy.on('tap', 'edge', (evt) => {
+      setContextMenu(null);
+      const s = storeRef.current;
+      if (s.mode === 'delete') { evt.stopPropagation(); s.removeEdge(evt.target.id()); }
     });
 
     cy.on('dbltap', (evt) => {
@@ -447,39 +509,6 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
       setContextMenu({ x: rp.x, y: rp.y, targetId: evt.target.id(), targetType: 'edge' });
     });
 
-    cy.on('mousedown', 'node', (evt) => {
-      if (storeRef.current.mode === 'addEdge') draggingFrom.current = evt.target.id();
-    });
-
-    cy.on('mouseup', 'node', (evt) => {
-      const s = storeRef.current;
-      if (s.mode === 'addEdge' && draggingFrom.current && draggingFrom.current !== evt.target.id()) {
-        const srcId = draggingFrom.current;
-        const tgtId = evt.target.id() as NodeId;
-        const srcNode = s.graph.getNodes().get(srcId);
-        const tgtNode = s.graph.getNodes().get(tgtId);
-        if (srcNode && tgtNode) {
-          const defaultWeight = Math.sqrt((srcNode.x - tgtNode.x) ** 2 + (srcNode.y - tgtNode.y) ** 2);
-          const raw = window.prompt('Peso da aresta (metros):', defaultWeight.toFixed(2));
-          if (raw !== null) {
-            const weight = parseFloat(raw) || defaultWeight;
-            s.addEdge({
-              id: `e_${srcId}_${tgtId}_${Date.now()}`,
-              source: srcId,
-              target: tgtId,
-              weight,
-              directed: s.graphType === 'directed',
-            });
-          }
-        }
-      }
-      draggingFrom.current = null;
-    });
-
-    cy.on('mouseup', (evt) => {
-      if (evt.target === cy) draggingFrom.current = null;
-    });
-
     cy.on('dragfree', 'node', (evt) => {
       if (storeRef.current.mode === 'move') {
         const pos = evt.target.position();
@@ -487,6 +516,14 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
       }
     });
   }, [mode, graphType, cyRef]);
+
+  // Clear pending edge source when switching away from addEdge mode
+  useEffect(() => {
+    if (mode !== 'addEdge' && edgeSrcId.current && cyRef.current) {
+      cyRef.current.$(`#${edgeSrcId.current}`).removeClass('edge-src');
+      edgeSrcId.current = null;
+    }
+  }, [mode, cyRef]);
 
   // Hover cursor hint
   useEffect(() => {
@@ -550,7 +587,7 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
         pixelRatio={performanceMode ? 1 : 'auto'}
         textureOnViewport={performanceMode}
         hideEdgesOnViewport={false}
-        autoungrabify={mode !== 'move' && mode !== 'addEdge'}
+        autoungrabify={mode !== 'move'}
         boxSelectionEnabled={false}
         panningEnabled
         userPanningEnabled={mode !== 'addVertex'}

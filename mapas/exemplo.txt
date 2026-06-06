@@ -1,0 +1,94 @@
+# ============================================================
+#  Grafo de Exemplo — Bairro Fictício
+#  NAVEGAR UFG · AED2 2026-1
+# ============================================================
+#
+#  Layout (15 nós, 24 arestas):
+#
+#   A ──→── B ──→── C ──→── D ──→── E
+#   ↑       ↕       ↕       ↕       ↕
+#   F ◄──── G ◄──── H ◄──── I ◄──── J
+#   ↕       ↕       ↕       ↕       ↕
+#   K ◄──── L ◄──── M ──→── N ──→── O
+#                   ↕
+#                   P  (beco sem saída)
+#
+#  ──→── = mão única    ↕ = bidirecional
+#  ──◄── = mão única (sentido oposto ao símbolo)
+#  Diagonais (não desenhadas): B↔H, H↔N, G→M, D→J
+#
+# ============================================================
+#  Sugestão de teste 1  — Dijkstra de A até O
+#    Rota mais curta: A→B→H→N→O  =  920m  (via atalhos diagonais)
+#    Rota mais longa: A→B→C→D→J→O = 1080m (via avenidas)
+#
+#  Sugestão de teste 2  — Dijkstra de O até A
+#    Sentido inverso: O→N→I→D→C→B→A  (mãos únicas bloqueiam atalhos)
+#    Nota: H→I é mão única H←I, logo muitos caminhos são vetados
+#
+#  Sugestão de teste 3  — Dijkstra de K até E
+#    Único caminho viável: K→F→A→B→C→D→E  (só F→A sobe de volta)
+# ============================================================
+
+NODES
+# id   x    y
+A      50   50
+B     250   50
+C     450   50
+D     650   50
+E     850   50
+F      50  250
+G     250  250
+H     450  250
+I     650  250
+J     850  250
+K      50  450
+L     250  450
+M     450  450
+N     650  450
+O     850  450
+P     450  600
+
+EDGES
+# origem  destino  peso   dir   (0=bidirecional  1=mão única)
+
+# ── Av. Norte — mão única para leste ──────────────────────
+A        B         200    1
+B        C         200    1
+C        D         200    1
+D        E         200    1
+
+# ── Av. Central — mão única para oeste ────────────────────
+J        I         180    1
+I        H         180    1
+H        G         180    1
+G        F         180    1
+
+# ── Av. Sul — mão única (divide no centro) ────────────────
+M        L         160    1
+L        K         160    1
+M        N         160    1
+N        O         160    1
+
+# ── Ruas N-S (ligam Av.Norte ↔ Av.Central) ────────────────
+F        A         200    1
+B        G         200    0
+C        H         200    0
+D        I         200    0
+E        J         200    0
+
+# ── Ruas N-S (ligam Av.Central ↔ Av.Sul) ─────────────────
+F        K         200    0
+G        L         200    0
+H        M         200    0
+I        N         200    0
+J        O         200    0
+
+# ── Terminal sul ──────────────────────────────────────────
+M        P         150    0
+
+# ── Atalhos diagonais ─────────────────────────────────────
+B        H         280    0
+H        N         280    0
+G        M         280    1
+D        J         280    1
