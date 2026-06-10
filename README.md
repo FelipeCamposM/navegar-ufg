@@ -1,6 +1,21 @@
+<div align="center">
+
 # NAVEGAR UFG
 
-Sistema de navegação em grafos desenvolvido para o Trabalho Final de **Algoritmos e Estruturas de Dados 2 (AED2)** — INF/UFG 2026-1.
+**Navegação em Grafos — AED2 / INF · UFG 2026-1**
+
+[![Deploy](https://img.shields.io/badge/▶%20Acessar%20App-navegar--ufg.vercel.app-6366f1?style=for-the-badge&logo=vercel&logoColor=white)](https://navegar-ufg.vercel.app/)
+
+> 🚀 **[https://navegar-ufg.vercel.app/](https://navegar-ufg.vercel.app/)**
+
+[![Vercel](https://img.shields.io/badge/Vercel-deployed-00C7B7?style=flat&logo=vercel)](https://navegar-ufg.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+
+</div>
+
+---
 
 Importa mapas reais do OpenStreetMap, constrói grafos interativos e calcula o caminho mínimo com **Dijkstra + MinHeap próprio**, tudo 100% no browser — sem servidor.
 

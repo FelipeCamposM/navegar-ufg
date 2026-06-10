@@ -607,26 +607,47 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
         <ContextMenu state={contextMenu} onClose={() => setContextMenu(null)} />
       )}
       {edgeDialog && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className={`relative ${glass.panel} p-6 w-72 flex flex-col gap-4`}>
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className={`relative ${glass.panel} p-0 w-80 overflow-hidden`}>
+            {/* specular */}
             <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.10] via-transparent to-transparent" />
-            <div className="relative z-10 flex flex-col gap-4">
-              <p className={glass.label}>Peso da aresta</p>
-              <input
-                autoFocus
-                type="number"
-                step="0.01"
-                className={glass.input}
-                value={edgeWeightInput}
-                onChange={e => setEdgeWeightInput(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') confirmEdge();
-                  if (e.key === 'Escape') cancelEdge();
-                }}
-              />
-              <div className="flex gap-2 justify-end">
-                <button className={glass.button} onClick={cancelEdge}>Cancelar</button>
-                <button className={`${glass.button} ${glass.buttonSuccess}`} onClick={confirmEdge}>Confirmar</button>
+            <div className="relative z-10 flex flex-col">
+              {/* header */}
+              <div className="flex items-center gap-3 px-5 pt-5 pb-4 border-b border-white/[0.08]">
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-500/[0.18] border border-green-400/[0.30]">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-green-300">
+                    <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white/90 leading-tight">Nova Aresta</p>
+                  <p className="text-xs text-white/40 mt-0.5">
+                    {edgeDialog.srcId} → {edgeDialog.tgtId}
+                  </p>
+                </div>
+              </div>
+              {/* body */}
+              <div className="flex flex-col gap-3 px-5 py-4">
+                <label className={`${glass.label} block`}>Peso (metros)</label>
+                <input
+                  autoFocus
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  className={`${glass.input} [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
+                  value={edgeWeightInput}
+                  onChange={e => setEdgeWeightInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') confirmEdge();
+                    if (e.key === 'Escape') cancelEdge();
+                  }}
+                />
+                <p className="text-xs text-white/30">Distância euclidiana: {edgeDialog.defaultWeight.toFixed(2)} m</p>
+              </div>
+              {/* footer */}
+              <div className="flex gap-2 px-5 pb-5">
+                <button className={`${glass.button} flex-1 justify-center`} onClick={cancelEdge}>Cancelar</button>
+                <button className={`${glass.button} ${glass.buttonSuccess} flex-1 justify-center`} onClick={confirmEdge}>Confirmar</button>
               </div>
             </div>
           </div>
