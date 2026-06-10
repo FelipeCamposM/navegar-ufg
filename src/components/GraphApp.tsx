@@ -16,11 +16,11 @@ const GraphCanvas = dynamic(
   }
 );
 
-export default function Home() {
+export function GraphApp() {
   const cyRef = useRef<Cytoscape.Core | null>(null);
 
   return (
-    <main className="bg-orbs relative w-screen h-screen overflow-hidden bg-[#070710]" suppressHydrationWarning>
+    <main className="bg-orbs relative w-screen h-screen overflow-hidden bg-[#070710]">
       <GraphCanvas cyRef={cyRef} />
       <Toolbar cyRef={cyRef} />
       <div className="fixed right-4 top-32 z-10">

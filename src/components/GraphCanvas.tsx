@@ -7,7 +7,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useGraph } from '@/hooks/useGraph';
 import { ContextMenu, ContextMenuState } from './ContextMenu';
 import type { NodeId } from '@/lib/graph/types';
-import { colors } from '@/lib/design-tokens';
+import { colors, glass } from '@/lib/design-tokens';
 
 interface GraphCanvasProps {
   cyRef: React.RefObject<Cytoscape.Core | null>;
@@ -208,6 +208,8 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
   useEffect(() => { storeRef.current = useGraph.getState(); });
 
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+  const [edgeDialog, setEdgeDialog] = useState<{ srcId: NodeId; tgtId: NodeId; defaultWeight: number } | null>(null);
+  const [edgeWeightInput, setEdgeWeightInput] = useState('');
   const edgeSrcId = useRef<NodeId | null>(null);
   const prevNavNodeRef = useRef<string | null>(null);
 
@@ -472,17 +474,8 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
             const defaultWeight = Math.sqrt(
               (srcNode.x - tgtNode.x) ** 2 + (srcNode.y - tgtNode.y) ** 2
             );
-            const raw = window.prompt('Peso da aresta (metros):', defaultWeight.toFixed(2));
-            if (raw !== null) {
-              const weight = parseFloat(raw) || defaultWeight;
-              s.addEdge({
-                id: `e_${srcId}_${tgtId}_${Date.now()}`,
-                source: srcId,
-                target: tgtId,
-                weight,
-                directed: s.graphType === 'directed',
-              });
-            }
+            setEdgeWeightInput(defaultWeight.toFixed(2));
+            setEdgeDialog({ srcId, tgtId, defaultWeight });
           }
         }
         return;
@@ -572,6 +565,24 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cyRef]);
 
+  function confirmEdge() {
+    if (!edgeDialog) return;
+    const { srcId, tgtId, defaultWeight } = edgeDialog;
+    const weight = parseFloat(edgeWeightInput) || defaultWeight;
+    storeRef.current.addEdge({
+      id: `e_${srcId}_${tgtId}_${Date.now()}`,
+      source: srcId,
+      target: tgtId,
+      weight,
+      directed: storeRef.current.graphType === 'directed',
+    });
+    setEdgeDialog(null);
+  }
+
+  function cancelEdge() {
+    setEdgeDialog(null);
+  }
+
   return (
     <div className="cy-container">
       <CytoscapeComponent
@@ -594,6 +605,32 @@ export function GraphCanvas({ cyRef }: GraphCanvasProps) {
       />
       {contextMenu && (
         <ContextMenu state={contextMenu} onClose={() => setContextMenu(null)} />
+      )}
+      {edgeDialog && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className={`relative ${glass.panel} p-6 w-72 flex flex-col gap-4`}>
+            <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.10] via-transparent to-transparent" />
+            <div className="relative z-10 flex flex-col gap-4">
+              <p className={glass.label}>Peso da aresta</p>
+              <input
+                autoFocus
+                type="number"
+                step="0.01"
+                className={glass.input}
+                value={edgeWeightInput}
+                onChange={e => setEdgeWeightInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') confirmEdge();
+                  if (e.key === 'Escape') cancelEdge();
+                }}
+              />
+              <div className="flex gap-2 justify-end">
+                <button className={glass.button} onClick={cancelEdge}>Cancelar</button>
+                <button className={`${glass.button} ${glass.buttonSuccess}`} onClick={confirmEdge}>Confirmar</button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
